@@ -7,7 +7,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 # -------------------------
 st.set_page_config(page_title="Simulador CPC | PUCPR", layout="centered")
 
-st.title("🎓 Simulador CPC | PUCPR")
+st.markdown("<h1 style='color:#8a0538;'>Simulador CPC | PUCPR</h1>", unsafe_allow_html=True)
 
 # -------------------------
 # FUNÇÃO DOCENTE
@@ -25,7 +25,7 @@ def calcular_nota_docente(proporcao_real, tipo):
 # -------------------------
 # FUNÇÃO PDF
 # -------------------------
-def gerar_pdf(ncpc, faixa, nc, nidd, no, nf, na, total, dout, mest, regi):
+def gerar_pdf(ncpc, faixa):
     doc = SimpleDocTemplate("relatorio_cpc.pdf")
     styles = getSampleStyleSheet()
 
@@ -34,56 +34,45 @@ def gerar_pdf(ncpc, faixa, nc, nidd, no, nf, na, total, dout, mest, regi):
     elementos.append(Paragraph("Relatório CPC - PUCPR", styles['Title']))
     elementos.append(Spacer(1, 12))
 
-    elementos.append(Paragraph(f"CPC Contínuo: {ncpc:.4f}", styles['Normal']))
+    elementos.append(Paragraph(f"CPC Contínuo: {ncpc}", styles['Normal']))
     elementos.append(Paragraph(f"Conceito: {faixa}", styles['Normal']))
-    elementos.append(Spacer(1, 12))
-
-    elementos.append(Paragraph("Indicadores:", styles['Heading2']))
-    elementos.append(Paragraph(f"Enade: {nc}", styles['Normal']))
-    elementos.append(Paragraph(f"IDD: {nidd}", styles['Normal']))
-    elementos.append(Paragraph(f"Org. Didática: {no}", styles['Normal']))
-    elementos.append(Paragraph(f"Infraestrutura: {nf}", styles['Normal']))
-    elementos.append(Paragraph(f"Oportunidades: {na}", styles['Normal']))
-    elementos.append(Spacer(1, 12))
-
-    elementos.append(Paragraph("Corpo Docente:", styles['Heading2']))
-    elementos.append(Paragraph(f"Total: {total}", styles['Normal']))
-    elementos.append(Paragraph(f"Doutores: {dout}", styles['Normal']))
-    elementos.append(Paragraph(f"Mestres: {mest}", styles['Normal']))
-    elementos.append(Paragraph(f"TI/TP: {regi}", styles['Normal']))
 
     doc.build(elementos)
 
     return "relatorio_cpc.pdf"
 
 # -------------------------
+# CONTROLE DE CASAS DECIMAIS
+# -------------------------
+casas = st.selectbox("Casas decimais", [2, 3, 4], index=2)
+
+# -------------------------
 # INPUTS
 # -------------------------
 st.subheader("📊 Indicadores de Qualidade (0 a 5)")
 
-nc = st.number_input("Nota Enade", 0.0, 5.0)
-nidd = st.number_input("Nota IDD", 0.0, 5.0)
-no = st.number_input("Organização Didático-Pedagógica", 0.0, 5.0)
-nf = st.number_input("Infraestrutura", 0.0, 5.0)
-na = st.number_input("Oportunidades", 0.0, 5.0)
+nc = st.number_input("Nota Enade", min_value=0.0, max_value=5.0, value=None, placeholder="Digite")
+nidd = st.number_input("Nota IDD", min_value=0.0, max_value=5.0, value=None, placeholder="Digite")
+no = st.number_input("Organização Didático-Pedagógica", min_value=0.0, max_value=5.0, value=None, placeholder="Digite")
+nf = st.number_input("Infraestrutura", min_value=0.0, max_value=5.0, value=None, placeholder="Digite")
+na = st.number_input("Oportunidades", min_value=0.0, max_value=5.0, value=None, placeholder="Digite")
 
 st.subheader("👨‍🏫 Corpo Docente")
 
-total = st.number_input("Total de Professores", 0.0)
-dout = st.number_input("Qtd Doutores", 0.0)
-mest = st.number_input("Qtd Mestres", 0.0)
-regi = st.number_input("Professores TI/TP", 0.0)
-
-st.subheader("📊 Histórico")
-
-cpc_anterior = st.number_input("CPC anterior", 0.0, 5.0)
+total = st.number_input("Total de Professores", min_value=0.0, value=None, placeholder="Digite")
+dout = st.number_input("Qtd Doutores", min_value=0.0, value=None, placeholder="Digite")
+mest = st.number_input("Qtd Mestres", min_value=0.0, value=None, placeholder="Digite")
+regi = st.number_input("Professores TI/TP", min_value=0.0, value=None, placeholder="Digite")
 
 # -------------------------
 # BOTÃO
 # -------------------------
 if st.button("CALCULAR CPC"):
 
-    if total <= 0:
+    # Validação
+    if None in [nc, nidd, no, nf, na, total, dout, mest, regi]:
+        st.error("Preencha todos os campos.")
+    elif total <= 0:
         st.error("Total de professores inválido.")
     else:
         try:
@@ -112,39 +101,38 @@ if st.button("CALCULAR CPC"):
             # Faixa
             if ncpc >= 3.945:
                 faixa = 5
-                cor = "green"
+                cor = "#9654FF"
             elif ncpc >= 2.945:
                 faixa = 4
-                cor = "limegreen"
+                cor = "#8a0538"
             elif ncpc >= 1.945:
                 faixa = 3
-                cor = "orange"
+                cor = "#d4a017"
             else:
                 faixa = 2
-                cor = "red"
+                cor = "#ff0040"
+
+            valor_formatado = round(ncpc, casas)
 
             # -------------------------
             # RESULTADO
             # -------------------------
-            st.markdown(f"## Resultado: **{ncpc:.4f}**")
-            st.markdown(f"### Conceito: :{cor}[{faixa}]")
+            st.markdown(f"""
+            <h1 style='text-align:center; color:{cor};'>
+            {valor_formatado}
+            </h1>
+            """, unsafe_allow_html=True)
 
-            # -------------------------
-            # COMPARAÇÃO
-            # -------------------------
-            if cpc_anterior > 0:
-                diferenca = ncpc - cpc_anterior
-
-                col1, col2, col3 = st.columns(3)
-
-                col1.metric("CPC Atual", f"{ncpc:.4f}")
-                col2.metric("CPC Anterior", f"{cpc_anterior:.4f}")
-                col3.metric("Evolução", f"{diferenca:.4f}", delta=f"{diferenca:.4f}")
+            st.markdown(f"""
+            <h3 style='text-align:center; color:{cor};'>
+            CONCEITO {faixa}
+            </h3>
+            """, unsafe_allow_html=True)
 
             # -------------------------
             # PDF
             # -------------------------
-            arquivo_pdf = gerar_pdf(ncpc, faixa, nc, nidd, no, nf, na, total, dout, mest, regi)
+            arquivo_pdf = gerar_pdf(valor_formatado, faixa)
 
             with open(arquivo_pdf, "rb") as f:
                 st.download_button(
@@ -155,4 +143,4 @@ if st.button("CALCULAR CPC"):
                 )
 
         except:
-            st.error("Preencha todos os campos corretamente.")
+            st.error("Erro no cálculo. Verifique os dados.")
