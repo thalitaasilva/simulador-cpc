@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import os
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 
@@ -9,7 +10,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 st.set_page_config(page_title="Simulador CPC | PUCPR", layout="centered")
 
 # -------------------------
-# ESTILO
+# ESTILO PUC
 # -------------------------
 st.markdown("""
 <style>
@@ -28,7 +29,7 @@ st.markdown("""
     box-shadow: 0px 8px 25px rgba(0,0,0,0.2);
 }
 
-/* CARDS (AGORA IGUAL BOTÃO) */
+/* CARDS */
 .card {
     background: linear-gradient(90deg, #8a0538, #ff0040);
     color: white;
@@ -77,11 +78,16 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # -------------------------
-# LOGO ENADE (FUNCIONANDO)
+# LOGO ENADE (SEM ERRO)
 # -------------------------
-col1, col2 = st.columns([1, 6])
-with col1:
-    st.image("enade_logo.png", width=80)
+caminho_logo = os.path.join(os.path.dirname(__file__), "enade_logo.png")
+
+if os.path.exists(caminho_logo):
+    col1, col2 = st.columns([1, 6])
+    with col1:
+        st.image(caminho_logo, width=80)
+else:
+    st.warning("⚠️ Logo ENADE não encontrada. Verifique o arquivo enade_logo.png")
 
 # -------------------------
 # FUNÇÕES
@@ -93,20 +99,18 @@ def calcular_nota_docente(proporcao_real, tipo):
     return min(5.0, max(0.0, nota))
 
 
-def gerar_pdf(ncpc, faixa, nc, nidd, no, nf, na, total, dout, mest, regi, nd, nm, nr):
+def gerar_pdf(ncpc, faixa):
     doc = SimpleDocTemplate("relatorio_cpc.pdf")
     styles = getSampleStyleSheet()
     elementos = []
 
     elementos.append(Paragraph("Relatório CPC - PUCPR", styles['Title']))
     elementos.append(Spacer(1, 12))
-
     elementos.append(Paragraph(f"CPC Contínuo: {ncpc:.4f}", styles['Normal']))
     elementos.append(Paragraph(f"Conceito: {faixa}", styles['Normal']))
 
     doc.build(elementos)
     return "relatorio_cpc.pdf"
-
 
 # -------------------------
 # CARD 1
@@ -174,3 +178,19 @@ if st.button("🚀 CALCULAR CPC"):
         """, unsafe_allow_html=True)
 
         st.progress(min(ncpc / 5, 1.0))
+
+        if faixa < 4:
+            st.warning("⚠️ Abaixo do ideal para CPC 4")
+        else:
+            st.success("🎯 Excelente desempenho!")
+
+        df = pd.DataFrame({
+            "Indicadores": ["Enade", "IDD", "Org.", "Infra", "Oport."],
+            "Notas": [nc, nidd, no, nf, na]
+        })
+        st.bar_chart(df.set_index("Indicadores"))
+
+        arquivo_pdf = gerar_pdf(ncpc, faixa)
+
+        with open(arquivo_pdf, "rb") as f:
+            st.download_button("📥 Baixar Relatório", f, "relatorio_cpc.pdf")
