@@ -28,7 +28,15 @@ st.markdown("""
     box-shadow: 0px 8px 25px rgba(0,0,0,0.2);
 }
 
-/* INPUTS BRANCOS */
+/* SUBTITULOS */
+.sub {
+    font-size: 13px;
+    color: #666;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+/* INPUT */
 div[data-baseweb="input"] input {
     background-color: white !important;
 }
@@ -89,40 +97,47 @@ def gerar_pdf(ncpc, faixa):
     return "relatorio_cpc.pdf"
 
 # -------------------------
-# INDICADORES
+# ENADE
 # -------------------------
-st.subheader("📊 Indicadores de Qualidade")
-
-col1, col2 = st.columns(2)
-
-with col1:
-    nc = st.number_input("Nota Enade", 0.0, 5.0)
-    nidd = st.number_input("Nota IDD", 0.0, 5.0)
-    no = st.number_input("Org. Didática", 0.0, 5.0)
-
-with col2:
-    nf = st.number_input("Infraestrutura", 0.0, 5.0)
-    na = st.number_input("Oportunidades", 0.0, 5.0)
+st.subheader("Nota do ENADE")
+st.markdown("<div class='sub'>Desempenho dos estudantes (20%)</div>", unsafe_allow_html=True)
+nc = st.number_input("", 0.0, 5.0, key="enade")
 
 # -------------------------
-# SEPARAÇÃO LEVE
+# IDD
 # -------------------------
-st.markdown("<br>", unsafe_allow_html=True)
+st.subheader("Nota do IDD")
+st.markdown("<div class='sub'>Valor agregado pelo processo formativo (35%)</div>", unsafe_allow_html=True)
+nidd = st.number_input("", 0.0, 5.0, key="idd")
+
+# -------------------------
+# SEPARAÇÃO
+# -------------------------
+st.markdown("---")
+
+# -------------------------
+# QUESTIONÁRIO
+# -------------------------
+st.subheader("Questionário do Estudante (15%)")
+
+no = st.number_input("Nota Organização Didático Pedagógica", 0.0, 5.0)
+nf = st.number_input("Nota da Infraestrutura", 0.0, 5.0)
+na = st.number_input("Nota de Oportunidades de Ampliação da Formação", 0.0, 5.0)
+
+# -------------------------
+# SEPARAÇÃO
+# -------------------------
+st.markdown("---")
 
 # -------------------------
 # CORPO DOCENTE
 # -------------------------
-st.subheader("👨‍🏫 Corpo Docente")
+st.subheader("Corpo docente (30%)")
 
-col3, col4 = st.columns(2)
-
-with col3:
-    total = st.number_input("Total Professores", 0.0)
-    dout = st.number_input("Doutores", 0.0)
-
-with col4:
-    mest = st.number_input("Mestres", 0.0)
-    regi = st.number_input("TI/TP", 0.0)
+total = st.number_input("Total de professores", 0.0)
+dout = st.number_input("Quantidade de doutores", 0.0)
+mest = st.number_input("Quantidade de mestres", 0.0)
+regi = st.number_input("Regime de trabalho (TI/TP)", 0.0)
 
 # -------------------------
 # BOTÃO
