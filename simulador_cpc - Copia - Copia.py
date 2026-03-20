@@ -14,6 +14,11 @@ st.markdown("""
     font-family: 'Segoe UI', sans-serif;
 }
 
+/* REMOVE LINK DOS TÍTULOS */
+h1 a, h2 a, h3 a, h4 a {
+    display: none !important;
+}
+
 .header {
     background: linear-gradient(90deg, #8a0538, #ff0040);
     padding: 25px;
@@ -34,13 +39,13 @@ div[data-baseweb="input"] input {
 div.stButton > button {
     background: linear-gradient(90deg, #8a0538, #ff0040);
     color: white;
-    border-radius: 12px;
-    height: 3em;
+    border-radius: 15px;
+    height: 4em;
     width: 100%;
     font-weight: bold;
+    font-size: 18px;
 }
 
-/* ESPAÇO EXTRA */
 .spacer {
     margin-top: 40px;
 }
@@ -49,8 +54,33 @@ div.stButton > button {
     background: white;
     padding: 35px;
     border-radius: 20px;
-    text-align: center;
     margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.resultado h1 {
+    font-size: 48px;
+    color: #8a0538;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.resultado h3 {
+    text-align: center;
+}
+
+.badge {
+    display:inline-block;
+    padding:12px 30px;
+    background:linear-gradient(90deg, #8a0538, #ff0040);
+    color:white;
+    border-radius:30px;
+    font-weight:bold;
+    font-size:18px;
+    margin-top:10px;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -115,40 +145,26 @@ def parse_int(valor):
         return None
 
 # =====================
-# INPUTS - com ajuste para manter números completos
+# INPUTS
 # =====================
 
 # ENADE
 st.subheader("Nota do ENADE (20%)")
 st.markdown("<div class='sub'>Desempenho dos estudantes</div>", unsafe_allow_html=True)
-nc_input = st.text_input("", placeholder="Ex: 3.409", key="enade_text")
-try:
-    nc = float(nc_input) if nc_input else None
-except:
-    nc = None
+nc = st.number_input("", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.3f", key="enade")
 
 # IDD
 st.subheader("Nota do IDD (35%)")
 st.markdown("<div class='sub'>Valor agregado pelo processo formativo</div>", unsafe_allow_html=True)
-nidd_input = st.text_input("", placeholder="Ex: 3.409", key="idd_text")
-try:
-    nidd = float(nidd_input) if nidd_input else None
-except:
-    nidd = None
+nidd = st.number_input("", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.3f", key="idd")
 
 st.markdown("---")
 
 # QUESTIONÁRIO
 st.subheader("Questionário do Estudante (15%)")
-no_input = st.text_input("Nota Organização Didático Pedagógica", placeholder="Ex: 3.409", key="org_text")
-nf_input = st.text_input("Nota da Infraestrutura", placeholder="Ex: 3.409", key="infra_text")
-na_input = st.text_input("Nota de Oportunidades de Ampliação da Formação", placeholder="Ex: 3.409", key="oport_text")
-try:
-    no = float(no_input) if no_input else None
-    nf = float(nf_input) if nf_input else None
-    na = float(na_input) if na_input else None
-except:
-    no = nf = na = None
+no = st.number_input("Nota Organização Didático Pedagógica", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.3f", key="org")
+nf = st.number_input("Nota da Infraestrutura", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.3f", key="infra")
+na = st.number_input("Nota de Oportunidades de Ampliação da Formação", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.3f", key="oport")
 
 st.markdown("---")
 
@@ -158,6 +174,7 @@ total_input = st.text_input("Total de professores", placeholder="Digite aqui")
 dout_input = st.text_input("Quantidade de doutores", placeholder="Digite aqui")
 mest_input = st.text_input("Quantidade de mestres", placeholder="Digite aqui")
 regi_input = st.text_input("Regime de trabalho (TI/TP)", placeholder="Digite aqui")
+
 total = parse_int(total_input)
 dout = parse_int(dout_input)
 mest = parse_int(mest_input)
@@ -187,7 +204,6 @@ if st.button("🚀 CALCULAR CPC"):
 
         faixa = 5 if ncpc >= 3.945 else 4 if ncpc >= 2.945 else 3 if ncpc >= 1.945 else 2
 
-        # MOSTRAR NUMERO COMPLETO
         ncpc_str = str(ncpc)
 
         st.markdown(f"""
