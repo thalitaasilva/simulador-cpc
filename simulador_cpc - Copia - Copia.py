@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 
 # -------------------------
@@ -9,7 +9,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 st.set_page_config(page_title="Simulador CPC | PUCPR", layout="centered")
 
 # -------------------------
-# ESTILO GLOBAL PUC
+# ESTILO
 # -------------------------
 st.markdown("""
 <style>
@@ -28,13 +28,20 @@ st.markdown("""
     box-shadow: 0px 8px 25px rgba(0,0,0,0.2);
 }
 
-/* CARDS */
+/* CARDS (AGORA IGUAL BOTÃO) */
 .card {
-    background: white;
+    background: linear-gradient(90deg, #8a0538, #ff0040);
+    color: white;
     padding: 20px;
     border-radius: 15px;
-    box-shadow: 0px 6px 20px rgba(0,0,0,0.1);
+    box-shadow: 0px 6px 20px rgba(0,0,0,0.2);
     margin-bottom: 20px;
+}
+
+/* INPUTS */
+div[data-baseweb="input"] {
+    background-color: white;
+    border-radius: 8px;
 }
 
 /* BOTÃO */
@@ -57,15 +64,6 @@ div.stButton > button {
     box-shadow: 0px 10px 30px rgba(0,0,0,0.2);
     margin-top: 20px;
 }
-
-/* LOGO ENADE FIXO */
-.logo-enade {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    width: 70px;
-    opacity: 0.9;
-}
 </style>
 """, unsafe_allow_html=True)
 
@@ -74,17 +72,16 @@ div.stButton > button {
 # -------------------------
 st.markdown("""
 <div class='header'>
-    <h1 style='color:white;'>Simulador CPC</h1>
-    <p style='color:white; opacity:0.85;'>Aqui é ENADE • Filho da PUC 2026</p>
+    <h1 style='color:white;'>Simulador CPC | PUCPR</h1>
 </div>
 """, unsafe_allow_html=True)
 
 # -------------------------
-# LOGO ENADE (CANTO)
+# LOGO ENADE (FUNCIONANDO)
 # -------------------------
-st.markdown("""
-<img src='enade_logo.png' class='logo-enade'>
-""", unsafe_allow_html=True)
+col1, col2 = st.columns([1, 6])
+with col1:
+    st.image("enade_logo.png", width=80)
 
 # -------------------------
 # FUNÇÕES
@@ -106,27 +103,6 @@ def gerar_pdf(ncpc, faixa, nc, nidd, no, nf, na, total, dout, mest, regi, nd, nm
 
     elementos.append(Paragraph(f"CPC Contínuo: {ncpc:.4f}", styles['Normal']))
     elementos.append(Paragraph(f"Conceito: {faixa}", styles['Normal']))
-    elementos.append(Spacer(1, 12))
-
-    elementos.append(Paragraph("Indicadores", styles['Heading2']))
-    elementos.append(Paragraph(f"Enade: {nc}", styles['Normal']))
-    elementos.append(Paragraph(f"IDD: {nidd}", styles['Normal']))
-    elementos.append(Paragraph(f"Org. Didática: {no}", styles['Normal']))
-    elementos.append(Paragraph(f"Infraestrutura: {nf}", styles['Normal']))
-    elementos.append(Paragraph(f"Oportunidades: {na}", styles['Normal']))
-    elementos.append(Spacer(1, 12))
-
-    elementos.append(Paragraph("Corpo Docente", styles['Heading2']))
-    elementos.append(Paragraph(f"Total: {total}", styles['Normal']))
-    elementos.append(Paragraph(f"Doutores: {dout}", styles['Normal']))
-    elementos.append(Paragraph(f"Mestres: {mest}", styles['Normal']))
-    elementos.append(Paragraph(f"Regime: {regi}", styles['Normal']))
-    elementos.append(Spacer(1, 12))
-
-    elementos.append(Paragraph("Simulação Docente", styles['Heading2']))
-    elementos.append(Paragraph(f"Doutores: {nd:.2f}", styles['Normal']))
-    elementos.append(Paragraph(f"Mestres: {nm:.2f}", styles['Normal']))
-    elementos.append(Paragraph(f"Regime: {nr:.2f}", styles['Normal']))
 
     doc.build(elementos)
     return "relatorio_cpc.pdf"
@@ -138,11 +114,11 @@ def gerar_pdf(ncpc, faixa, nc, nidd, no, nf, na, total, dout, mest, regi, nd, nm
 st.markdown("<div class='card'>", unsafe_allow_html=True)
 st.subheader("📊 Indicadores de Qualidade")
 
-nc = st.number_input("Nota Enade", 0.0, 5.0, value=None, placeholder="Digite")
-nidd = st.number_input("Nota IDD", 0.0, 5.0, value=None, placeholder="Digite")
-no = st.number_input("Org. Didática", 0.0, 5.0, value=None, placeholder="Digite")
-nf = st.number_input("Infraestrutura", 0.0, 5.0, value=None, placeholder="Digite")
-na = st.number_input("Oportunidades", 0.0, 5.0, value=None, placeholder="Digite")
+nc = st.number_input("Nota Enade", 0.0, 5.0)
+nidd = st.number_input("Nota IDD", 0.0, 5.0)
+no = st.number_input("Org. Didática", 0.0, 5.0)
+nf = st.number_input("Infraestrutura", 0.0, 5.0)
+na = st.number_input("Oportunidades", 0.0, 5.0)
 
 st.markdown("</div>", unsafe_allow_html=True)
 
@@ -152,10 +128,10 @@ st.markdown("</div>", unsafe_allow_html=True)
 st.markdown("<div class='card'>", unsafe_allow_html=True)
 st.subheader("👨‍🏫 Corpo Docente")
 
-total = st.number_input("Total Professores", 0.0, value=None, placeholder="Digite")
-dout = st.number_input("Doutores", 0.0, value=None, placeholder="Digite")
-mest = st.number_input("Mestres", 0.0, value=None, placeholder="Digite")
-regi = st.number_input("TI/TP", 0.0, value=None, placeholder="Digite")
+total = st.number_input("Total Professores", 0.0)
+dout = st.number_input("Doutores", 0.0)
+mest = st.number_input("Mestres", 0.0)
+regi = st.number_input("TI/TP", 0.0)
 
 st.markdown("</div>", unsafe_allow_html=True)
 
@@ -164,10 +140,8 @@ st.markdown("</div>", unsafe_allow_html=True)
 # -------------------------
 if st.button("🚀 CALCULAR CPC"):
 
-    if None in [nc, nidd, no, nf, na, total, dout, mest, regi]:
-        st.error("Preencha todos os campos.")
-    elif total <= 0:
-        st.error("Total inválido.")
+    if total <= 0:
+        st.error("Preencha corretamente.")
     else:
         pd = dout / total
         pm = (dout + mest) / total
@@ -200,19 +174,3 @@ if st.button("🚀 CALCULAR CPC"):
         """, unsafe_allow_html=True)
 
         st.progress(min(ncpc / 5, 1.0))
-
-        if faixa < 4:
-            st.warning("⚠️ Abaixo do ideal para CPC 4")
-        else:
-            st.success("🎯 Excelente desempenho!")
-
-        df = pd.DataFrame({
-            "Indicadores": ["Enade", "IDD", "Org.", "Infra", "Oport."],
-            "Notas": [nc, nidd, no, nf, na]
-        })
-        st.bar_chart(df.set_index("Indicadores"))
-
-        arquivo_pdf = gerar_pdf(ncpc, faixa, nc, nidd, no, nf, na, total, dout, mest, regi, nd, nm, nr)
-
-        with open(arquivo_pdf, "rb") as f:
-            st.download_button("📥 Baixar Relatório", f, "relatorio_cpc.pdf")
