@@ -6,12 +6,17 @@ from reportlab.lib.styles import getSampleStyleSheet
 # CONFIG
 st.set_page_config(page_title="Simulador CPC | PUCPR", layout="centered")
 
-# ESTILO (adicionando espaçamento para ENADE e IDD)
+# ESTILO
 st.markdown("""
 <style>
 .stApp {
     background: linear-gradient(135deg, #ffffff, #f3e8ff);
     font-family: 'Segoe UI', sans-serif;
+}
+
+/* REMOVE LINK DOS TÍTULOS */
+h1 a, h2 a, h3 a, h4 a {
+    display: none !important;
 }
 
 .header {
@@ -25,20 +30,20 @@ st.markdown("""
 .sub {
     font-size: 13px;
     color: #666;
-    margin-bottom: 5px;  /* espaço abaixo do subtítulo */
 }
 
-div[data-baseweb="input"] {
-    margin-bottom: 20px; /* espaçamento entre os campos de input */
+div[data-baseweb="input"] input {
+    background-color: white !important;
 }
 
 div.stButton > button {
     background: linear-gradient(90deg, #8a0538, #ff0040);
     color: white;
-    border-radius: 12px;
-    height: 3em;
+    border-radius: 15px;
+    height: 4em;
     width: 100%;
     font-weight: bold;
+    font-size: 18px;
 }
 
 .spacer {
@@ -49,8 +54,33 @@ div.stButton > button {
     background: white;
     padding: 35px;
     border-radius: 20px;
-    text-align: center;
     margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.resultado h1 {
+    font-size: 48px;
+    color: #8a0538;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.resultado h3 {
+    text-align: center;
+}
+
+.badge {
+    display:inline-block;
+    padding:12px 30px;
+    background:linear-gradient(90deg, #8a0538, #ff0040);
+    color:white;
+    border-radius:30px;
+    font-weight:bold;
+    font-size:18px;
+    margin-top:10px;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -134,12 +164,12 @@ def parse_int(valor):
 # ENADE
 st.subheader("Nota do ENADE (20%)")
 st.markdown("<div class='sub'>Desempenho dos estudantes</div>", unsafe_allow_html=True)
-nc = st.number_input("", min_value=0.0, max_value=5.0, value=None, placeholder="Digite aqui", format="%.4f", key="enade")
+nc = st.number_input("", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.3f", key="enade")
 
 # IDD
 st.subheader("Nota do IDD (35%)")
 st.markdown("<div class='sub'>Valor agregado pelo processo formativo</div>", unsafe_allow_html=True)
-nidd = st.number_input("", min_value=0.0, max_value=5.0, value=None, placeholder="Digite aqui", format="%.4f", key="idd")
+nidd = st.number_input("", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.3f", key="idd")
 
 st.markdown("---")
 
