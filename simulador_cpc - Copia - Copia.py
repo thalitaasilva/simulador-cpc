@@ -155,4 +155,29 @@ regi = st.number_input("Regime de trabalho (TI/TP)", min_value=0, value=None, st
 st.markdown("<div class='spacer'></div>", unsafe_allow_html=True)
 
 # ==========================
-# BOTÃO if st.button("🚀 CALCULAR CPC"): if None in [nc, nidd, no, nf, na, total, dout, mest, regi] or total == 0: st.error("Preencha todos os campos.") else: pd = dout / total pm = (dout + mest) / total pr = regi / total nd = calcular_nota_docente(pd, "doutores") nm = calcular_nota_docente(pm, "mestres") nr = calcular_nota_docente(pr, "regime") ncpc = ( 0.20 * nc + 0.35 * nidd + 0.15 * nd + 0.075 * nm + 0.075 * nr + 0.075 * no + 0.05 * nf + 0.025 * na ) faixa = 5 if ncpc >= 3.945 else 4 if ncpc >= 2.945 else 3 if ncpc >= 1.945 else 2 st.markdown(f"<div class='resultado'><h1>{ncpc:.4f}</h1><h3>CONCEITO {faixa}</h3></div>", unsafe_allow_html=True) with open(gerar_pdf(ncpc, faixa), "rb") as f: st.download_button("📥 Baixar PDF", f, "relatorio.pdf")
+# BOTÃO
+if st.button("🚀 CALCULAR CPC"):
+
+    if None in [nc, nidd, no, nf, na, total, dout, mest, regi] or total == 0:
+        st.error("Preencha todos os campos.")
+    else:
+        pd = dout / total
+        pm = (dout + mest) / total
+        pr = regi / total
+
+        nd = calcular_nota_docente(pd, "doutores")
+        nm = calcular_nota_docente(pm, "mestres")
+        nr = calcular_nota_docente(pr, "regime")
+
+        ncpc = (
+            0.20 * nc + 0.35 * nidd + 0.15 * nd +
+            0.075 * nm + 0.075 * nr +
+            0.075 * no + 0.05 * nf + 0.025 * na
+        )
+
+        faixa = 5 if ncpc >= 3.945 else 4 if ncpc >= 2.945 else 3 if ncpc >= 1.945 else 2
+
+        st.markdown(f"<div class='resultado'><h1>{ncpc:.4f}</h1><h3>CONCEITO {faixa}</h3></div>", unsafe_allow_html=True)
+
+        with open(gerar_pdf(ncpc, faixa), "rb") as f:
+            st.download_button("📥 Baixar PDF", f, "relatorio.pdf")
