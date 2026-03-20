@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
 from reportlab.lib.styles import getSampleStyleSheet
 
 # -------------------------
@@ -9,20 +9,62 @@ from reportlab.lib.styles import getSampleStyleSheet
 st.set_page_config(page_title="Simulador CPC | PUCPR", layout="centered")
 
 # -------------------------
-# ESTILO GLOBAL
+# ESTILO GLOBAL PUC
 # -------------------------
 st.markdown("""
 <style>
 .stApp {
-    background: linear-gradient(to right, #ffffff, #f3e8ff);
+    background: linear-gradient(135deg, #ffffff, #f3e8ff);
+    font-family: 'Segoe UI', sans-serif;
 }
 
-div.stButton > button {
+/* HEADER */
+.header {
     background: linear-gradient(90deg, #8a0538, #9654FF);
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    margin-bottom: 25px;
+    box-shadow: 0px 8px 25px rgba(0,0,0,0.2);
+}
+
+/* CARDS */
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0px 6px 20px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+/* BOTÃO */
+div.stButton > button {
+    background: linear-gradient(90deg, #8a0538, #ff0040);
     color: white;
-    border-radius: 10px;
+    border-radius: 12px;
     height: 3em;
+    width: 100%;
+    font-size: 16px;
     font-weight: bold;
+}
+
+/* RESULTADO */
+.resultado {
+    background: white;
+    padding: 35px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0px 10px 30px rgba(0,0,0,0.2);
+    margin-top: 20px;
+}
+
+/* LOGO ENADE FIXO */
+.logo-enade {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 70px;
+    opacity: 0.9;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -31,13 +73,17 @@ div.stButton > button {
 # HEADER
 # -------------------------
 st.markdown("""
-<div style='background: linear-gradient(90deg, #8a0538, #9654FF);
-            padding:20px;
-            border-radius:12px;
-            text-align:center;
-            margin-bottom:20px'>
-    <h1 style='color:white;'>Simulador CPC | PUCPR</h1>
+<div class='header'>
+    <h1 style='color:white;'>Simulador CPC</h1>
+    <p style='color:white; opacity:0.85;'>Aqui é ENADE • Filho da PUC 2026</p>
 </div>
+""", unsafe_allow_html=True)
+
+# -------------------------
+# LOGO ENADE (CANTO)
+# -------------------------
+st.markdown("""
+<img src='enade_logo.png' class='logo-enade'>
 """, unsafe_allow_html=True)
 
 # -------------------------
@@ -87,10 +133,9 @@ def gerar_pdf(ncpc, faixa, nc, nidd, no, nf, na, total, dout, mest, regi, nd, nm
 
 
 # -------------------------
-# CARD 1 - INDICADORES
+# CARD 1
 # -------------------------
-st.markdown("<div style='background:white;padding:20px;border-radius:12px;box-shadow:0px 4px 12px rgba(0,0,0,0.1);margin-bottom:15px'>", unsafe_allow_html=True)
-
+st.markdown("<div class='card'>", unsafe_allow_html=True)
 st.subheader("📊 Indicadores de Qualidade")
 
 nc = st.number_input("Nota Enade", 0.0, 5.0, value=None, placeholder="Digite")
@@ -102,10 +147,9 @@ na = st.number_input("Oportunidades", 0.0, 5.0, value=None, placeholder="Digite"
 st.markdown("</div>", unsafe_allow_html=True)
 
 # -------------------------
-# CARD 2 - DOCENTE
+# CARD 2
 # -------------------------
-st.markdown("<div style='background:white;padding:20px;border-radius:12px;box-shadow:0px 4px 12px rgba(0,0,0,0.1);margin-bottom:15px'>", unsafe_allow_html=True)
-
+st.markdown("<div class='card'>", unsafe_allow_html=True)
 st.subheader("👨‍🏫 Corpo Docente")
 
 total = st.number_input("Total Professores", 0.0, value=None, placeholder="Digite")
@@ -118,7 +162,7 @@ st.markdown("</div>", unsafe_allow_html=True)
 # -------------------------
 # BOTÃO
 # -------------------------
-if st.button("CALCULAR CPC"):
+if st.button("🚀 CALCULAR CPC"):
 
     if None in [nc, nidd, no, nf, na, total, dout, mest, regi]:
         st.error("Preencha todos os campos.")
@@ -144,37 +188,31 @@ if st.button("CALCULAR CPC"):
         elif ncpc >= 2.945:
             faixa, cor = 4, "#8a0538"
         elif ncpc >= 1.945:
-            faixa, cor = 3, "#d4a017"
+            faixa, cor = 3, "#ff0040"
         else:
             faixa, cor = 2, "#ff0040"
 
-        # RESULTADO CARD
         st.markdown(f"""
-        <div style='background:white;padding:30px;border-radius:15px;text-align:center;
-                    box-shadow:0px 6px 20px rgba(0,0,0,0.15)'>
-            <h1 style='color:{cor}; font-size:50px'>{ncpc:.4f}</h1>
+        <div class='resultado'>
+            <h1 style='color:{cor}; font-size:55px'>{ncpc:.4f}</h1>
             <h3 style='color:{cor};'>CONCEITO {faixa}</h3>
         </div>
         """, unsafe_allow_html=True)
 
-        # PROGRESSO
         st.progress(min(ncpc / 5, 1.0))
 
-        # MENSAGEM
         if faixa < 4:
-            st.warning("⚠️ Curso abaixo do ideal para CPC 4")
+            st.warning("⚠️ Abaixo do ideal para CPC 4")
         else:
-            st.success("🎯 Curso com bom desempenho!")
+            st.success("🎯 Excelente desempenho!")
 
-        # GRÁFICO
         df = pd.DataFrame({
             "Indicadores": ["Enade", "IDD", "Org.", "Infra", "Oport."],
             "Notas": [nc, nidd, no, nf, na]
         })
         st.bar_chart(df.set_index("Indicadores"))
 
-        # PDF
         arquivo_pdf = gerar_pdf(ncpc, faixa, nc, nidd, no, nf, na, total, dout, mest, regi, nd, nm, nr)
 
         with open(arquivo_pdf, "rb") as f:
-            st.download_button("📥 Salvar em PDF", f, "relatorio_cpc.pdf")
+            st.download_button("📥 Baixar Relatório", f, "relatorio_cpc.pdf")
