@@ -136,9 +136,6 @@ def gerar_pdf(ncpc, faixa, dados):
     doc.build(elementos)
     return "relatorio_cpc.pdf"
 
-# ==========================
-# FUNÇÃO AUXILIAR PARA INTEIROS
-# ==========================
 def parse_int(valor):
     try:
         return int(valor.replace(".", ""))
@@ -150,7 +147,7 @@ def parse_int(valor):
 # ==========================
 st.subheader("Nota do ENADE (20%)")
 st.markdown("<div class='sub'>Desempenho dos estudantes</div>", unsafe_allow_html=True)
-nc_input = st.text_input("", placeholder="Digite aqui")
+nc_input = st.text_input("Digite a Nota do ENADE:", placeholder="Ex: 3.409", key="enade_text")
 try:
     nc = float(nc_input)
 except:
@@ -158,7 +155,7 @@ except:
 
 st.subheader("Nota do IDD (35%)")
 st.markdown("<div class='sub'>Valor agregado pelo processo formativo</div>", unsafe_allow_html=True)
-nidd_input = st.text_input("", placeholder="Digite aqui")
+nidd_input = st.text_input("Digite a Nota do IDD:", placeholder="Ex: 3.409", key="idd_text")
 try:
     nidd = float(nidd_input)
 except:
@@ -167,9 +164,9 @@ except:
 st.markdown("---")
 
 st.subheader("Questionário do Estudante (15%)")
-no_input = st.text_input("Nota Organização Didático Pedagógica", placeholder="Digite aqui")
-nf_input = st.text_input("Nota da Infraestrutura", placeholder="Digite aqui")
-na_input = st.text_input("Nota de Oportunidades de Ampliação da Formação", placeholder="Digite aqui")
+no_input = st.text_input("Nota Organização Didático Pedagógica", placeholder="Ex: 3.409", key="no_text")
+nf_input = st.text_input("Nota da Infraestrutura", placeholder="Ex: 3.409", key="nf_text")
+na_input = st.text_input("Nota de Oportunidades de Ampliação da Formação", placeholder="Ex: 3.409", key="na_text")
 try:
     no = float(no_input)
 except:
@@ -186,10 +183,10 @@ except:
 st.markdown("---")
 
 st.subheader("Corpo docente (30%)")
-total_input = st.text_input("Total de professores", placeholder="Digite aqui")
-dout_input = st.text_input("Quantidade de doutores", placeholder="Digite aqui")
-mest_input = st.text_input("Quantidade de mestres", placeholder="Digite aqui")
-regi_input = st.text_input("Regime de trabalho (TI/TP)", placeholder="Digite aqui")
+total_input = st.text_input("Total de professores", placeholder="Digite aqui", key="total_text")
+dout_input = st.text_input("Quantidade de doutores", placeholder="Digite aqui", key="dout_text")
+mest_input = st.text_input("Quantidade de mestres", placeholder="Digite aqui", key="mest_text")
+regi_input = st.text_input("Regime de trabalho (TI/TP)", placeholder="Digite aqui", key="regi_text")
 
 total = parse_int(total_input)
 dout = parse_int(dout_input)
@@ -201,7 +198,7 @@ st.markdown("<div class='spacer'></div>", unsafe_allow_html=True)
 # ==========================
 # BOTÃO CALCULAR
 # ==========================
-if st.button("🚀 CALCULAR CPC"):
+if st.button("🚀 CALCULAR CPC", key="calcular_btn"):
 
     if None in [nc, nidd, no, nf, na, total, dout, mest, regi] or total == 0:
         st.error("Preencha todos os campos corretamente.")
@@ -221,7 +218,7 @@ if st.button("🚀 CALCULAR CPC"):
         )
 
         faixa = 5 if ncpc >= 3.945 else 4 if ncpc >= 2.945 else 3 if ncpc >= 1.945 else 2
-        ncpc_str = str(ncpc)  # mantém o número completo, ex: 3.409
+        ncpc_str = str(ncpc)  # mantém número completo
 
         st.markdown(f"""
         <div class='resultado'>
@@ -248,4 +245,4 @@ if st.button("🚀 CALCULAR CPC"):
         }
 
         with open(gerar_pdf(ncpc_str, faixa, dados_simulacao), "rb") as f:
-            st.download_button("📥 Baixar PDF", f, "relatorio_cpc.pdf")
+            st.download_button("📥 Baixar PDF", f, "relatorio_cpc.pdf", key="download_pdf")
