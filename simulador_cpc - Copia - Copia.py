@@ -143,20 +143,23 @@ def parse_int(valor):
 # ENADE
 st.subheader("Nota do ENADE (20%)")
 st.markdown("<div class='sub'>Desempenho dos estudantes</div>", unsafe_allow_html=True)
-nc = st.number_input("", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.2f")
+
+nc = st.number_input("", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.2f", key="enade")
 
 # IDD
 st.subheader("Nota do IDD (35%)")
 st.markdown("<div class='sub'>Valor agregado pelo processo formativo</div>", unsafe_allow_html=True)
-nidd = st.number_input("", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.2f")
+
+nidd = st.number_input("", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.2f", key="idd")
 
 st.markdown("---")
 
 # QUESTIONÁRIO
 st.subheader("Questionário do Estudante (15%)")
-no = st.number_input("Nota Organização Didático Pedagógica", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.2f")
-nf = st.number_input("Nota da Infraestrutura", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.2f")
-na = st.number_input("Nota de Oportunidades de Ampliação da Formação", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.2f")
+
+no = st.number_input("Nota Organização Didático Pedagógica", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.2f", key="org")
+nf = st.number_input("Nota da Infraestrutura", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.2f", key="infra")
+na = st.number_input("Nota de Oportunidades de Ampliação da Formação", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.2f", key="oport")
 
 st.markdown("---")
 
@@ -197,7 +200,6 @@ if st.button("🚀 CALCULAR CPC"):
 
         faixa = 5 if ncpc >= 3.945 else 4 if ncpc >= 2.945 else 3 if ncpc >= 1.945 else 2
 
-        # RESULTADO
         st.markdown(f"""
         <div class='resultado'>
             <div style='font-size:14px; color:#888;'>CPC CONTÍNUO</div>
