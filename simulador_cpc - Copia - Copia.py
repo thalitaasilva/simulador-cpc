@@ -163,13 +163,11 @@ def parse_int(valor):
 
 # ENADE
 st.subheader("Nota do ENADE (20%)")
-st.markdown("<div class='sub'>Desempenho dos estudantes</div>", unsafe_allow_html=True)
-nc = st.number_input("", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.3f", key="enade")
+nc = st.number_input("Desempenho dos estudantes", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.3f", key="enade")
 
 # IDD
 st.subheader("Nota do IDD (35%)")
-st.markdown("<div class='sub'>Valor agregado pelo processo formativo</div>", unsafe_allow_html=True)
-nidd = st.number_input("", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.3f", key="idd")
+nidd = st.number_input("Valor agregado pelo processo formativo", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.3f", key="idd")
 
 st.markdown("---")
 
