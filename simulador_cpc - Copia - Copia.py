@@ -200,13 +200,13 @@ if st.button("🚀 CALCULAR CPC"):
 
         faixa = 5 if ncpc >= 3.945 else 4 if ncpc >= 2.945 else 3 if ncpc >= 1.945 else 2
 
-        st.markdown(f"""
-        <div class='resultado'>
-            <div style='font-size:14px; color:#888;'>CPC CONTÍNUO</div>
-            <h1>{ncpc:.4f}</h1>
-            <div class='badge'>CONCEITO {faixa}</div>
-        </div>
-        """, unsafe_allow_html=True)
+        ncpc_str = str(round(ncpc, 4))
+st.markdown(f"""
+<div class='resultado'>
+    <h1>{ncpc_str}</h1>
+    <h3>CONCEITO {faixa}</h3>
+</div>
+""", unsafe_allow_html=True)
 
         st.markdown("<div class='spacer'></div>", unsafe_allow_html=True)
 
