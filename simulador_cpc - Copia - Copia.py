@@ -176,7 +176,7 @@ dout = parse_int(dout_input)
 mest = parse_int(mest_input)
 regi = parse_int(regi_input)
 
-st.markdown("<div class='spacer'></div>", unsafe_allow_html=True)
+st.markdown(f"<div class='resultado'><h1>{ncpc:.4f}</h1><h3>CONCEITO {faixa}</h3></div>", unsafe_allow_html=True)
 
 # BOTÃO
 if st.button("🚀 CALCULAR CPC"):
