@@ -131,7 +131,8 @@ def gerar_pdf(ncpc, faixa, dados):
 
     elementos.append(Paragraph("4. RESULTADO FINAL", styles['Heading2']))
     elementos.append(Spacer(1, 8))
-    elementos.append(Paragraph(f"CPC Contínuo: {ncpc}", styles['Normal']))
+    # Aqui está o ajuste: CPC com 4 casas decimais, igual na tela
+    elementos.append(Paragraph(f"CPC Contínuo: {ncpc:.4f}", styles['Normal']))
     elementos.append(Paragraph(f"Conceito: {faixa}", styles['Normal']))
 
     doc.build(elementos)
