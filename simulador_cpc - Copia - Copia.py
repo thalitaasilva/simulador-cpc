@@ -7,7 +7,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 # -------------------------
 st.set_page_config(page_title="Simulador CPC | PUCPR", layout="centered")
 
-st.markdown("<h1 style='color:#8a0538;'>Simulador CPC | PUCPR</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='color:black;'>Simulador CPC | PUCPR</h1>", unsafe_allow_html=True)
 
 # -------------------------
 # FUNÇÃO DOCENTE
@@ -34,17 +34,12 @@ def gerar_pdf(ncpc, faixa):
     elementos.append(Paragraph("Relatório CPC - PUCPR", styles['Title']))
     elementos.append(Spacer(1, 12))
 
-    elementos.append(Paragraph(f"CPC Contínuo: {ncpc}", styles['Normal']))
+    elementos.append(Paragraph(f"CPC Contínuo: {ncpc:.4f}", styles['Normal']))
     elementos.append(Paragraph(f"Conceito: {faixa}", styles['Normal']))
 
     doc.build(elementos)
 
     return "relatorio_cpc.pdf"
-
-# -------------------------
-# CONTROLE DE CASAS DECIMAIS
-# -------------------------
-casas = st.selectbox("Casas decimais", [2, 3, 4], index=2)
 
 # -------------------------
 # INPUTS
@@ -112,14 +107,12 @@ if st.button("CALCULAR CPC"):
                 faixa = 2
                 cor = "#ff0040"
 
-            valor_formatado = round(ncpc, casas)
-
             # -------------------------
             # RESULTADO
             # -------------------------
             st.markdown(f"""
             <h1 style='text-align:center; color:{cor};'>
-            {valor_formatado}
+            {ncpc:.4f}
             </h1>
             """, unsafe_allow_html=True)
 
@@ -132,11 +125,11 @@ if st.button("CALCULAR CPC"):
             # -------------------------
             # PDF
             # -------------------------
-            arquivo_pdf = gerar_pdf(valor_formatado, faixa)
+            arquivo_pdf = gerar_pdf(ncpc, faixa)
 
             with open(arquivo_pdf, "rb") as f:
                 st.download_button(
-                    label="📥 Baixar Relatório em PDF",
+                    label="📥 Salvar em PDF",
                     data=f,
                     file_name="relatorio_cpc.pdf",
                     mime="application/pdf"
