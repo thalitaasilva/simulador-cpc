@@ -39,6 +39,19 @@ div.stButton > button {
     width: 100%;
     font-weight: bold;
 }
+
+/* ESPAÇO EXTRA */
+.spacer {
+    margin-top: 40px;
+}
+
+.resultado {
+    background: white;
+    padding: 35px;
+    border-radius: 20px;
+    text-align: center;
+    margin-top: 25px;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -67,32 +80,80 @@ def gerar_pdf(ncpc, faixa):
 st.subheader("Nota do ENADE (20%)")
 st.markdown("<div class='sub'>Desempenho dos estudantes</div>", unsafe_allow_html=True)
 
-nc = st.number_input("", 0.0, 5.0, value=None, placeholder="Digite", format="%.2f", key="enade")
+nc = st.number_input(
+    "", min_value=0.0, max_value=5.0,
+    value=None, placeholder="Digite aqui", format="%.2f",
+    key="enade"
+)
 
 # IDD
 st.subheader("Nota do IDD (35%)")
 st.markdown("<div class='sub'>Valor agregado pelo processo formativo</div>", unsafe_allow_html=True)
 
-nidd = st.number_input("", 0.0, 5.0, value=None, placeholder="Digite", format="%.2f", key="idd")
+nidd = st.number_input(
+    "", min_value=0.0, max_value=5.0,
+    value=None, placeholder="Digite aqui", format="%.2f",
+    key="idd"
+)
 
 st.markdown("---")
 
 # QUESTIONÁRIO
 st.subheader("Questionário do Estudante (15%)")
 
-no = st.number_input("Nota Organização Didático Pedagógica", 0.0, 5.0, value=None, key="org")
-nf = st.number_input("Nota da Infraestrutura", 0.0, 5.0, value=None, key="infra")
-na = st.number_input("Nota de Oportunidades", 0.0, 5.0, value=None, key="oport")
+no = st.number_input(
+    "Nota Organização Didático Pedagógica",
+    0.0, 5.0, value=None, placeholder="Digite aqui", format="%.2f",
+    key="org"
+)
+
+nf = st.number_input(
+    "Nota da Infraestrutura",
+    0.0, 5.0, value=None, placeholder="Digite aqui", format="%.2f",
+    key="infra"
+)
+
+na = st.number_input(
+    "Nota de Oportunidades de Ampliação da Formação",
+    0.0, 5.0, value=None, placeholder="Digite aqui", format="%.2f",
+    key="oport"
+)
 
 st.markdown("---")
 
 # DOCENTE
 st.subheader("Corpo docente (30%)")
 
-total = st.number_input("Total de professores", value=None, key="total")
-dout = st.number_input("Doutores", value=None, key="dout")
-mest = st.number_input("Mestres", value=None, key="mest")
-regi = st.number_input("Regime (TI/TP)", value=None, key="regi")
+total = st.number_input(
+    "Total de professores",
+    min_value=0, value=None, step=1, format="%d",
+    placeholder="Digite aqui",
+    key="total"
+)
+
+dout = st.number_input(
+    "Quantidade de doutores",
+    min_value=0, value=None, step=1, format="%d",
+    placeholder="Digite aqui",
+    key="dout"
+)
+
+mest = st.number_input(
+    "Quantidade de mestres",
+    min_value=0, value=None, step=1, format="%d",
+    placeholder="Digite aqui",
+    key="mest"
+)
+
+regi = st.number_input(
+    "Regime de trabalho (TI/TP)",
+    min_value=0, value=None, step=1, format="%d",
+    placeholder="Digite aqui",
+    key="regi"
+)
+
+# ESPAÇO ANTES DO BOTÃO
+st.markdown("<div class='spacer'></div>", unsafe_allow_html=True)
 
 # BOTÃO
 if st.button("🚀 CALCULAR CPC"):
@@ -116,7 +177,7 @@ if st.button("🚀 CALCULAR CPC"):
 
         faixa = 5 if ncpc >= 3.945 else 4 if ncpc >= 2.945 else 3 if ncpc >= 1.945 else 2
 
-        st.success(f"CPC: {ncpc:.4f} | Conceito {faixa}")
+        st.markdown(f"<div class='resultado'><h1>{ncpc:.4f}</h1><h3>CONCEITO {faixa}</h3></div>", unsafe_allow_html=True)
 
         with open(gerar_pdf(ncpc, faixa), "rb") as f:
             st.download_button("📥 Baixar PDF", f, "relatorio.pdf")
