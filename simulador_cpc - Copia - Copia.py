@@ -23,19 +23,53 @@ def calcular_nota_docente(proporcao_real, tipo):
     return min(5.0, max(0.0, nota))
 
 # -------------------------
-# FUNÇÃO PDF
+# FUNÇÃO PDF COMPLETA
 # -------------------------
-def gerar_pdf(ncpc, faixa):
+def gerar_pdf(ncpc, faixa, nc, nidd, no, nf, na, total, dout, mest, regi, nd, nm, nr):
     doc = SimpleDocTemplate("relatorio_cpc.pdf")
     styles = getSampleStyleSheet()
 
     elementos = []
 
+    # Título
     elementos.append(Paragraph("Relatório CPC - PUCPR", styles['Title']))
     elementos.append(Spacer(1, 12))
 
+    # Resultado
+    elementos.append(Paragraph("Resultado Final", styles['Heading2']))
     elementos.append(Paragraph(f"CPC Contínuo: {ncpc:.4f}", styles['Normal']))
     elementos.append(Paragraph(f"Conceito: {faixa}", styles['Normal']))
+    elementos.append(Spacer(1, 12))
+
+    # Dados inseridos
+    elementos.append(Paragraph("Indicadores de Qualidade", styles['Heading2']))
+    elementos.append(Paragraph(f"Nota Enade: {nc}", styles['Normal']))
+    elementos.append(Paragraph(f"IDD: {nidd}", styles['Normal']))
+    elementos.append(Paragraph(f"Org. Didática: {no}", styles['Normal']))
+    elementos.append(Paragraph(f"Infraestrutura: {nf}", styles['Normal']))
+    elementos.append(Paragraph(f"Oportunidades: {na}", styles['Normal']))
+    elementos.append(Spacer(1, 12))
+
+    # Corpo docente
+    elementos.append(Paragraph("Corpo Docente", styles['Heading2']))
+    elementos.append(Paragraph(f"Total de Professores: {total}", styles['Normal']))
+    elementos.append(Paragraph(f"Doutores: {dout}", styles['Normal']))
+    elementos.append(Paragraph(f"Mestres: {mest}", styles['Normal']))
+    elementos.append(Paragraph(f"Regime TI/TP: {regi}", styles['Normal']))
+    elementos.append(Spacer(1, 12))
+
+    # Simulação docente
+    elementos.append(Paragraph("Simulação dos Indicadores Docentes", styles['Heading2']))
+    elementos.append(Paragraph(f"Nota Doutores: {nd:.2f}", styles['Normal']))
+    elementos.append(Paragraph(f"Nota Mestres: {nm:.2f}", styles['Normal']))
+    elementos.append(Paragraph(f"Nota Regime: {nr:.2f}", styles['Normal']))
+    elementos.append(Spacer(1, 12))
+
+    # Observação
+    elementos.append(Paragraph(
+        "Relatório gerado com base nos dados informados e nas diretrizes da Nota Técnica do INEP.",
+        styles['Italic']
+    ))
 
     doc.build(elementos)
 
@@ -64,7 +98,6 @@ regi = st.number_input("Professores TI/TP", min_value=0.0, value=None, placehold
 # -------------------------
 if st.button("CALCULAR CPC"):
 
-    # Validação
     if None in [nc, nidd, no, nf, na, total, dout, mest, regi]:
         st.error("Preencha todos os campos.")
     elif total <= 0:
@@ -81,7 +114,7 @@ if st.button("CALCULAR CPC"):
             nm = calcular_nota_docente(pm, "mestres")
             nr = calcular_nota_docente(pr, "regime")
 
-            # Cálculo CPC
+            # CPC
             ncpc = (
                 (0.20 * nc) +
                 (0.35 * nidd) +
@@ -107,9 +140,7 @@ if st.button("CALCULAR CPC"):
                 faixa = 2
                 cor = "#ff0040"
 
-            # -------------------------
             # RESULTADO
-            # -------------------------
             st.markdown(f"""
             <h1 style='text-align:center; color:{cor};'>
             {ncpc:.4f}
@@ -122,10 +153,8 @@ if st.button("CALCULAR CPC"):
             </h3>
             """, unsafe_allow_html=True)
 
-            # -------------------------
             # PDF
-            # -------------------------
-            arquivo_pdf = gerar_pdf(ncpc, faixa)
+            arquivo_pdf = gerar_pdf(ncpc, faixa, nc, nidd, no, nf, na, total, dout, mest, regi, nd, nm, nr)
 
             with open(arquivo_pdf, "rb") as f:
                 st.download_button(
