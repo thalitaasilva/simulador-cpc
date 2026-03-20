@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import os
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 
@@ -10,7 +9,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 st.set_page_config(page_title="Simulador CPC | PUCPR", layout="centered")
 
 # -------------------------
-# ESTILO PUC
+# ESTILO
 # -------------------------
 st.markdown("""
 <style>
@@ -21,28 +20,17 @@ st.markdown("""
 
 /* HEADER */
 .header {
-    background: linear-gradient(90deg, #8a0538, #9654FF);
+    background: linear-gradient(90deg, #8a0538, #ff0040);
     padding: 25px;
     border-radius: 15px;
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
     box-shadow: 0px 8px 25px rgba(0,0,0,0.2);
 }
 
-/* CARDS */
-.card {
-    background: linear-gradient(90deg, #8a0538, #ff0040);
-    color: white;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0px 6px 20px rgba(0,0,0,0.2);
-    margin-bottom: 20px;
-}
-
-/* INPUTS */
-div[data-baseweb="input"] {
-    background-color: white;
-    border-radius: 8px;
+/* INPUTS BRANCOS */
+div[data-baseweb="input"] input {
+    background-color: white !important;
 }
 
 /* BOTÃO */
@@ -63,7 +51,7 @@ div.stButton > button {
     border-radius: 20px;
     text-align: center;
     box-shadow: 0px 10px 30px rgba(0,0,0,0.2);
-    margin-top: 20px;
+    margin-top: 25px;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -76,18 +64,6 @@ st.markdown("""
     <h1 style='color:white;'>Simulador CPC | PUCPR</h1>
 </div>
 """, unsafe_allow_html=True)
-
-# -------------------------
-# LOGO ENADE (SEM ERRO)
-# -------------------------
-caminho_logo = os.path.join(os.path.dirname(__file__), "enade_logo.png")
-
-if os.path.exists(caminho_logo):
-    col1, col2 = st.columns([1, 6])
-    with col1:
-        st.image(caminho_logo, width=80)
-else:
-    st.warning("⚠️ Logo ENADE não encontrada. Verifique o arquivo enade_logo.png")
 
 # -------------------------
 # FUNÇÕES
@@ -113,35 +89,46 @@ def gerar_pdf(ncpc, faixa):
     return "relatorio_cpc.pdf"
 
 # -------------------------
-# CARD 1
+# INDICADORES
 # -------------------------
-st.markdown("<div class='card'>", unsafe_allow_html=True)
 st.subheader("📊 Indicadores de Qualidade")
 
-nc = st.number_input("Nota Enade", 0.0, 5.0)
-nidd = st.number_input("Nota IDD", 0.0, 5.0)
-no = st.number_input("Org. Didática", 0.0, 5.0)
-nf = st.number_input("Infraestrutura", 0.0, 5.0)
-na = st.number_input("Oportunidades", 0.0, 5.0)
+col1, col2 = st.columns(2)
 
-st.markdown("</div>", unsafe_allow_html=True)
+with col1:
+    nc = st.number_input("Nota Enade", 0.0, 5.0)
+    nidd = st.number_input("Nota IDD", 0.0, 5.0)
+    no = st.number_input("Org. Didática", 0.0, 5.0)
+
+with col2:
+    nf = st.number_input("Infraestrutura", 0.0, 5.0)
+    na = st.number_input("Oportunidades", 0.0, 5.0)
 
 # -------------------------
-# CARD 2
+# SEPARAÇÃO LEVE
 # -------------------------
-st.markdown("<div class='card'>", unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
+
+# -------------------------
+# CORPO DOCENTE
+# -------------------------
 st.subheader("👨‍🏫 Corpo Docente")
 
-total = st.number_input("Total Professores", 0.0)
-dout = st.number_input("Doutores", 0.0)
-mest = st.number_input("Mestres", 0.0)
-regi = st.number_input("TI/TP", 0.0)
+col3, col4 = st.columns(2)
 
-st.markdown("</div>", unsafe_allow_html=True)
+with col3:
+    total = st.number_input("Total Professores", 0.0)
+    dout = st.number_input("Doutores", 0.0)
+
+with col4:
+    mest = st.number_input("Mestres", 0.0)
+    regi = st.number_input("TI/TP", 0.0)
 
 # -------------------------
 # BOTÃO
 # -------------------------
+st.markdown("<br>", unsafe_allow_html=True)
+
 if st.button("🚀 CALCULAR CPC"):
 
     if total <= 0:
@@ -188,6 +175,7 @@ if st.button("🚀 CALCULAR CPC"):
             "Indicadores": ["Enade", "IDD", "Org.", "Infra", "Oport."],
             "Notas": [nc, nidd, no, nf, na]
         })
+
         st.bar_chart(df.set_index("Indicadores"))
 
         arquivo_pdf = gerar_pdf(ncpc, faixa)
