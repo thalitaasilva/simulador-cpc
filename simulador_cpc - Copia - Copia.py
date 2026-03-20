@@ -1,12 +1,15 @@
 import streamlit as st
-import pandas as pd
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 
-# CONFIG
+# ==========================
+# CONFIGURAÇÃO DA PÁGINA
+# ==========================
 st.set_page_config(page_title="Simulador CPC | PUCPR", layout="centered")
 
-# ESTILO
+# ==========================
+# ESTILO CSS
+# ==========================
 st.markdown("""
 <style>
 .stApp {
@@ -14,7 +17,6 @@ st.markdown("""
     font-family: 'Segoe UI', sans-serif;
 }
 
-/* REMOVE LINK DOS TÍTULOS */
 h1 a, h2 a, h3 a, h4 a {
     display: none !important;
 }
@@ -81,14 +83,18 @@ div.stButton > button {
 </style>
 """, unsafe_allow_html=True)
 
+# ==========================
 # HEADER
+# ==========================
 st.markdown("""
 <div class='header'>
     <h1 style='color:white;'>Simulador CPC | PUCPR</h1>
 </div>
 """, unsafe_allow_html=True)
 
+# ==========================
 # FUNÇÕES
+# ==========================
 def calcular_nota_docente(p, tipo):
     metas = {"doutores": 0.80, "mestres": 1.00, "regime": 0.90}
     return min(5.0, (p / metas.get(tipo, 0.8)) * 5)
@@ -105,7 +111,6 @@ def gerar_pdf(ncpc, faixa, dados):
     elementos.append(Spacer(1, 8))
     elementos.append(Paragraph(f"Nota ENADE: {dados['Nota ENADE']}", styles['Normal']))
     elementos.append(Paragraph(f"Nota IDD: {dados['Nota IDD']}", styles['Normal']))
-
     elementos.append(Spacer(1, 12))
 
     elementos.append(Paragraph("2. QUESTIONÁRIO DO ESTUDANTE", styles['Heading2']))
@@ -113,7 +118,6 @@ def gerar_pdf(ncpc, faixa, dados):
     elementos.append(Paragraph(f"Org. Didático Pedagógica: {dados['Org. Didático Pedagógica']}", styles['Normal']))
     elementos.append(Paragraph(f"Infraestrutura: {dados['Infraestrutura']}", styles['Normal']))
     elementos.append(Paragraph(f"Oportunidades: {dados['Oportunidades']}", styles['Normal']))
-
     elementos.append(Spacer(1, 12))
 
     elementos.append(Paragraph("3. CORPO DOCENTE", styles['Heading2']))
@@ -122,50 +126,66 @@ def gerar_pdf(ncpc, faixa, dados):
     elementos.append(Paragraph(f"Doutores: {dados['Doutores']} ({dados['Proporção Doutores']})", styles['Normal']))
     elementos.append(Paragraph(f"Mestres: {dados['Mestres']} ({dados['Proporção Mestres']})", styles['Normal']))
     elementos.append(Paragraph(f"Regime: {dados['Regime']} ({dados['Proporção Regime']})", styles['Normal']))
-
     elementos.append(Spacer(1, 12))
 
     elementos.append(Paragraph("4. RESULTADO FINAL", styles['Heading2']))
     elementos.append(Spacer(1, 8))
-    elementos.append(Paragraph(f"CPC Contínuo: {ncpc:.4f}", styles['Normal']))
+    elementos.append(Paragraph(f"CPC Contínuo: {ncpc}", styles['Normal']))
     elementos.append(Paragraph(f"Conceito: {faixa}", styles['Normal']))
 
     doc.build(elementos)
     return "relatorio_cpc.pdf"
 
-# FUNÇÃO FORMATAÇÃO
+# ==========================
+# FUNÇÃO AUXILIAR PARA INTEIROS
+# ==========================
 def parse_int(valor):
     try:
         return int(valor.replace(".", ""))
     except:
         return None
 
-# ENADE
+# ==========================
+# INPUTS DO USUÁRIO
+# ==========================
 st.subheader("Nota do ENADE (20%)")
 st.markdown("<div class='sub'>Desempenho dos estudantes</div>", unsafe_allow_html=True)
+nc_input = st.text_input("", placeholder="Digite aqui")
+try:
+    nc = float(nc_input)
+except:
+    nc = None
 
-nc = st.number_input("", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.2f", key="enade")
-
-# IDD
 st.subheader("Nota do IDD (35%)")
 st.markdown("<div class='sub'>Valor agregado pelo processo formativo</div>", unsafe_allow_html=True)
-
-nidd = st.number_input("", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.2f", key="idd")
+nidd_input = st.text_input("", placeholder="Digite aqui")
+try:
+    nidd = float(nidd_input)
+except:
+    nidd = None
 
 st.markdown("---")
 
-# QUESTIONÁRIO
 st.subheader("Questionário do Estudante (15%)")
-
-no = st.number_input("Nota Organização Didático Pedagógica", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.2f", key="org")
-nf = st.number_input("Nota da Infraestrutura", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.2f", key="infra")
-na = st.number_input("Nota de Oportunidades de Ampliação da Formação", 0.0, 5.0, value=None, placeholder="Digite aqui", format="%.2f", key="oport")
+no_input = st.text_input("Nota Organização Didático Pedagógica", placeholder="Digite aqui")
+nf_input = st.text_input("Nota da Infraestrutura", placeholder="Digite aqui")
+na_input = st.text_input("Nota de Oportunidades de Ampliação da Formação", placeholder="Digite aqui")
+try:
+    no = float(no_input)
+except:
+    no = None
+try:
+    nf = float(nf_input)
+except:
+    nf = None
+try:
+    na = float(na_input)
+except:
+    na = None
 
 st.markdown("---")
 
-# DOCENTE
 st.subheader("Corpo docente (30%)")
-
 total_input = st.text_input("Total de professores", placeholder="Digite aqui")
 dout_input = st.text_input("Quantidade de doutores", placeholder="Digite aqui")
 mest_input = st.text_input("Quantidade de mestres", placeholder="Digite aqui")
@@ -178,7 +198,9 @@ regi = parse_int(regi_input)
 
 st.markdown("<div class='spacer'></div>", unsafe_allow_html=True)
 
-# BOTÃO
+# ==========================
+# BOTÃO CALCULAR
+# ==========================
 if st.button("🚀 CALCULAR CPC"):
 
     if None in [nc, nidd, no, nf, na, total, dout, mest, regi] or total == 0:
@@ -199,8 +221,7 @@ if st.button("🚀 CALCULAR CPC"):
         )
 
         faixa = 5 if ncpc >= 3.945 else 4 if ncpc >= 2.945 else 3 if ncpc >= 1.945 else 2
-
-        ncpc_str = str(round(ncpc, 4))
+        ncpc_str = str(ncpc)  # mantém o número completo, ex: 3.409
 
         st.markdown(f"""
         <div class='resultado'>
@@ -226,5 +247,5 @@ if st.button("🚀 CALCULAR CPC"):
             "Proporção Regime": round(pr, 3),
         }
 
-        with open(gerar_pdf(ncpc, faixa, dados_simulacao), "rb") as f:
-            st.download_button("📥 Baixar PDF", f, "relatorio.pdf")
+        with open(gerar_pdf(ncpc_str, faixa, dados_simulacao), "rb") as f:
+            st.download_button("📥 Baixar PDF", f, "relatorio_cpc.pdf")
