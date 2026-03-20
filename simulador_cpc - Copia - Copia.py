@@ -95,7 +95,15 @@ st.markdown("""
 # FUNÇÕES
 def calcular_nota_docente(p, tipo):
     metas = {"doutores": 0.80, "mestres": 1.00, "regime": 0.90}
-    return min(5.0, (p / metas.get(tipo, 0.8)) * 5)
+
+    if tipo == "mestres":
+            # Nota máxima se atingir a meta de 100%
+            if p >= 1.0:  # pelo menos 100% de mestres
+                return 5.0
+            else:
+                return min(5.0, (p / metas[tipo]) * 5)
+        else:
+            return min(5.0, (p / metas.get(tipo, 0.8)) * 5)
 
 def gerar_pdf(ncpc, faixa, dados):
     doc = SimpleDocTemplate("relatorio_cpc.pdf")
