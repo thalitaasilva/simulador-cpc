@@ -204,7 +204,8 @@ if st.button("🚀 CALCULAR CPC"):
 
         faixa = 5 if ncpc >= 3.945 else 4 if ncpc >= 2.945 else 3 if ncpc >= 1.945 else 2
 
-        ncpc_str = str(ncpc)
+        # Aqui só formatamos para mostrar com 3 casas decimais, sem mexer no cálculo
+        ncpc_str = f"{ncpc:.3f}"
 
         st.markdown(f"""
         <div class='resultado'>
@@ -230,5 +231,5 @@ if st.button("🚀 CALCULAR CPC"):
             "Proporção Regime": round(pr, 3),
         }
 
-        with open(gerar_pdf(ncpc_str, faixa, dados_simulacao), "rb") as f:
+        with open(gerar_pdf(ncpc, faixa, dados_simulacao), "rb") as f:
             st.download_button("📥 Baixar PDF", f, "relatorio.pdf")
