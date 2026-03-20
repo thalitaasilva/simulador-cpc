@@ -204,8 +204,7 @@ if st.button("🚀 CALCULAR CPC"):
 
         faixa = 5 if ncpc >= 3.945 else 4 if ncpc >= 2.945 else 3 if ncpc >= 1.945 else 2
 
-        # Aqui só formatamos para mostrar com 3 casas decimais, sem mexer no cálculo
-        ncpc_str = f"{ncpc:.3f}"
+        ncpc_str = str(round(ncpc, 4))
 
         st.markdown(f"""
         <div class='resultado'>
