@@ -28,11 +28,10 @@ st.markdown("""
     box-shadow: 0px 8px 25px rgba(0,0,0,0.2);
 }
 
-/* SUBTITULOS */
+/* SUBTEXTO */
 .sub {
     font-size: 13px;
     color: #666;
-    margin-top: -10px;
     margin-bottom: 10px;
 }
 
@@ -99,15 +98,15 @@ def gerar_pdf(ncpc, faixa):
 # -------------------------
 # ENADE
 # -------------------------
-st.subheader("Nota do ENADE")
-st.markdown("<div class='sub'>Desempenho dos estudantes (20%)</div>", unsafe_allow_html=True)
+st.subheader("Nota do ENADE (20%)")
+st.markdown("<div class='sub'>Desempenho dos estudantes</div>", unsafe_allow_html=True)
 nc = st.number_input("", 0.0, 5.0, key="enade")
 
 # -------------------------
 # IDD
 # -------------------------
-st.subheader("Nota do IDD")
-st.markdown("<div class='sub'>Valor agregado pelo processo formativo (35%)</div>", unsafe_allow_html=True)
+st.subheader("Nota do IDD (35%)")
+st.markdown("<div class='sub'>Valor agregado pelo processo formativo</div>", unsafe_allow_html=True)
 nidd = st.number_input("", 0.0, 5.0, key="idd")
 
 # -------------------------
